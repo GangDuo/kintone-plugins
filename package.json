@@ -1,5 +1,8 @@
 {
 	"name": "kintone-plugins",
 	"license": "UNLICENSED",
-	"private": true
+	"private": true,
+	"workspaces": [
+		"packages/export-form-fields"
+	]
 }
