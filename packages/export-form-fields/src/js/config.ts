@@ -27,3 +27,10 @@ form.addEventListener("submit", (e) => {
 cancelButton.addEventListener("click", () => {
   window.location.href = "../../" + kintone.app.getId() + "/plugin/";
 });
+document.querySelector(".js-export-button")?.addEventListener("click", () => {
+  const app = document.querySelector<HTMLInputElement>(".js-text-app")?.value;
+  if (!app) {
+    throw new Error("アクセス先アプリIDに入力してください。");
+  }
+  alert(app);
+});
