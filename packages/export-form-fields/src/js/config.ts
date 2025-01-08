@@ -6,15 +6,8 @@ import * as XLSX from "xlsx";
 const PLUGIN_ID = kintone.$PLUGIN_ID;
 
 const cancelButton = document.querySelector(".js-cancel-button");
-const messageInput =
-  document.querySelector<HTMLInputElement>(".js-text-message");
-if (!(cancelButton && messageInput)) {
+if (!(cancelButton)) {
   throw new Error("Required elements do not exist.");
-}
-const config = kintone.plugin.app.getConfig(PLUGIN_ID);
-
-if (config.message) {
-  messageInput.value = config.message;
 }
 
 // アプリ情報を取得する
