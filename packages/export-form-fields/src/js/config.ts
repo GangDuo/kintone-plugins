@@ -18,6 +18,24 @@ if (config.message) {
   messageInput.value = config.message;
 }
 
+// アプリ情報を取得する
+kintone.api(
+  kintone.api.url('/k/v1/apps.json', true),
+  'GET',
+  { },
+  (res: any) => {
+    // 「アプリ名」を選択肢にしてセレクトボックスに追加
+    const { apps } = res;
+    apps.forEach((app: any) => {
+      const newElement = document.createElement('option');
+      newElement.textContent = app.name;
+      newElement.value = app.appId;
+      document.getElementById('appList')?.appendChild(newElement);
+    });
+  },
+  (err: any) => console.error(err)
+);
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   kintone.plugin.app.setConfig({ message: messageInput.value }, () => {
