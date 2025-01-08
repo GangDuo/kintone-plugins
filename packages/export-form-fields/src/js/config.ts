@@ -1,5 +1,6 @@
 // You can use the ESModules syntax and @kintone/rest-api-client without additional settings.
 // import { KintoneRestAPIClient } from "@kintone/rest-api-client";
+import * as XLSX from "xlsx";
 
 // @ts-expect-error
 const PLUGIN_ID = kintone.$PLUGIN_ID;
@@ -38,5 +39,13 @@ document.querySelector(".js-export-button")?.addEventListener("click", async () 
     'GET',
     { app }
   );
-  console.dir(properties);
+
+  /* https://docs.sheetjs.com/docs/getting-started/examples/export */
+  /* generate worksheet and workbook */
+  const worksheet = XLSX.utils.json_to_sheet(properties);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "sheetName");
+
+  /* create an XLSX file and try to save to Form.xlsx */
+  XLSX.writeFile(workbook, "Form.xlsx", { compression: true });
 });
