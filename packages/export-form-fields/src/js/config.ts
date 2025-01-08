@@ -47,10 +47,7 @@ cancelButton.addEventListener("click", () => {
   window.location.href = "../../" + kintone.app.getId() + "/plugin/";
 });
 document.querySelector(".js-export-button")?.addEventListener("click", async () => {
-  const app = document.querySelector<HTMLInputElement>(".js-text-app")?.value;
-  if (!app) {
-    throw new Error("アクセス先アプリIDに入力してください。");
-  }
+  const app = (<HTMLInputElement>document.getElementById("appList")).value;
 
   const { properties } = await kintone.api(
     kintone.api.url('/k/v1/form.json', true),
