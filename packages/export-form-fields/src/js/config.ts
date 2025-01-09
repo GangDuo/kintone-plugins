@@ -32,20 +32,39 @@ cancelButton.addEventListener("click", () => {
   window.location.href = "../../" + kintone.app.getId() + "/plugin/";
 });
 document.querySelector(".js-export-button")?.addEventListener("click", async () => {
-  const app = (<HTMLInputElement>document.getElementById("appList")).value;
+  switch (getContentId()) {
+    case 0:
+      const app = (<HTMLInputElement>document.getElementById("appList")).value;
 
-  const { properties } = await kintone.api(
-    kintone.api.url('/k/v1/form.json', true),
-    'GET',
-    { app }
-  );
+      const { properties } = await kintone.api(
+        kintone.api.url('/k/v1/form.json', true),
+        'GET',
+        { app }
+      );
+    
+      /* https://docs.sheetjs.com/docs/getting-started/examples/export */
+      /* generate worksheet and workbook */
+      const worksheet = XLSX.utils.json_to_sheet(properties);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "sheetName");
+    
+      /* create an XLSX file and try to save to Form.xlsx */
+      XLSX.writeFile(workbook, "Form.xlsx", { compression: true });
+    
+      break;
 
-  /* https://docs.sheetjs.com/docs/getting-started/examples/export */
-  /* generate worksheet and workbook */
-  const worksheet = XLSX.utils.json_to_sheet(properties);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "sheetName");
-
-  /* create an XLSX file and try to save to Form.xlsx */
-  XLSX.writeFile(workbook, "Form.xlsx", { compression: true });
+    case 1:
+      console.error('Not implemented');
+      break;
+  
+    default:
+      console.error('Not implemented');
+      break;
+  }
 });
+
+function getContentId(): number {
+  const radios = Array.from(document.getElementsByName('radio')).filter(input => (<HTMLInputElement>input).checked);
+  const code = (<HTMLInputElement>radios[0]).value;
+  return parseInt(code);
+}
