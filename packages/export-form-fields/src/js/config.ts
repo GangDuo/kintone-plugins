@@ -32,10 +32,9 @@ cancelButton.addEventListener("click", () => {
   window.location.href = "../../" + kintone.app.getId() + "/plugin/";
 });
 document.querySelector(".js-export-button")?.addEventListener("click", async () => {
+  const app = (<HTMLInputElement>document.getElementById("appList")).value;
   switch (getContentId()) {
     case 0:
-      const app = (<HTMLInputElement>document.getElementById("appList")).value;
-
       const { properties } = await kintone.api(
         kintone.api.url('/k/v1/form.json', true),
         'GET',
@@ -54,7 +53,12 @@ document.querySelector(".js-export-button")?.addEventListener("click", async () 
       break;
 
     case 1:
-      console.error('Not implemented');
+      const { layout } = await kintone.api(
+        kintone.api.url('/k/v1/app/form/layout.json', true),
+        'GET',
+        { app }
+      );
+      console.dir(layout);
       break;
   
     default:
