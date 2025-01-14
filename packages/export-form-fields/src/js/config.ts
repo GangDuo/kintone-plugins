@@ -64,7 +64,17 @@ document.querySelector(".js-export-button")?.addEventListener("click", async () 
 
       break;
   
-    default:
+    case 2: {
+      const { properties } = await kintone.api(
+        kintone.api.url('/k/v1/app/form/fields.json', true),
+        'GET',
+        { app }
+      );
+      writeThenDownload('fields.json', JSON.stringify(properties));
+      break;
+    }
+
+      default:
       console.error('Not implemented');
       break;
   }
