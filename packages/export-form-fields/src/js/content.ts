@@ -28,7 +28,7 @@ class EmptyContent implements Pipeline {
 	end(): void {}
 }
 
-export function ContentCreator (identifierId: number): Pipeline {
+export function ContentCreator (identifierId: number, { app }: { app: string | number}): Pipeline {
     switch (identifierId) {
         case 0:
             return new FormContent;
