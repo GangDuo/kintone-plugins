@@ -59,6 +59,9 @@ document.querySelector(".js-export-button")?.addEventListener("click", async () 
         { app }
       );
       console.dir(layout);
+      writeThenDownload('layout.json', JSON.stringify(layout));
+
+
       break;
   
     default:
@@ -71,4 +74,20 @@ function getContentId(): number {
   const radios = Array.from(document.getElementsByName('radio')).filter(input => (<HTMLInputElement>input).checked);
   const code = (<HTMLInputElement>radios[0]).value;
   return parseInt(code);
+}
+
+function writeThenDownload(fname:string, payload: string) {
+  if(typeof Blob !== 'undefined') {
+    var blob = new Blob([payload], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    if (a.download != null) {
+      a.download = fname; a.href = url; document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      if (URL.revokeObjectURL && typeof setTimeout !== 'undefined') setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      return url;
+    }
+  }
+  throw new Error("cannot save file " + fname);
 }
