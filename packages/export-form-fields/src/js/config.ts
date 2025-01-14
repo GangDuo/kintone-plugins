@@ -1,6 +1,6 @@
 // You can use the ESModules syntax and @kintone/rest-api-client without additional settings.
 // import { KintoneRestAPIClient } from "@kintone/rest-api-client";
-import * as XLSX from "xlsx";
+import { ContentCreator } from "./content";
 
 // @ts-expect-error
 const PLUGIN_ID = kintone.$PLUGIN_ID;
@@ -33,71 +33,12 @@ cancelButton.addEventListener("click", () => {
 });
 document.querySelector(".js-export-button")?.addEventListener("click", async () => {
   const app = (<HTMLInputElement>document.getElementById("appList")).value;
-  switch (getContentId()) {
-    case 0:
-      const { properties } = await kintone.api(
-        kintone.api.url('/k/v1/form.json', true),
-        'GET',
-        { app }
-      );
-    
-      /* https://docs.sheetjs.com/docs/getting-started/examples/export */
-      /* generate worksheet and workbook */
-      const worksheet = XLSX.utils.json_to_sheet(properties);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "sheetName");
-    
-      /* create an XLSX file and try to save to Form.xlsx */
-      XLSX.writeFile(workbook, "Form.xlsx", { compression: true });
-    
-      break;
-
-    case 1:
-      const { layout } = await kintone.api(
-        kintone.api.url('/k/v1/app/form/layout.json', true),
-        'GET',
-        { app }
-      );
-      console.dir(layout);
-      writeThenDownload('layout.json', JSON.stringify(layout));
-
-
-      break;
-  
-    case 2: {
-      const { properties } = await kintone.api(
-        kintone.api.url('/k/v1/app/form/fields.json', true),
-        'GET',
-        { app }
-      );
-      writeThenDownload('fields.json', JSON.stringify(properties));
-      break;
-    }
-
-      default:
-      console.error('Not implemented');
-      break;
-  }
+  const instance = ContentCreator(getContentId(), { app });
+  await instance.process();
 });
 
 function getContentId(): number {
   const radios = Array.from(document.getElementsByName('radio')).filter(input => (<HTMLInputElement>input).checked);
   const code = (<HTMLInputElement>radios[0]).value;
   return parseInt(code);
-}
-
-function writeThenDownload(fname:string, payload: string): string {
-  if(typeof Blob !== 'undefined') {
-    var blob = new Blob([payload], {type:"application/json"});
-    var url = URL.createObjectURL(blob);
-
-    var a = document.createElement("a");
-    if (a.download != null) {
-      a.download = fname; a.href = url; document.body.appendChild(a); a.click();
-      document.body.removeChild(a);
-      if (URL.revokeObjectURL && typeof setTimeout !== 'undefined') setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-      return url;
-    }
-  }
-  throw new Error("cannot save file " + fname);
 }
