@@ -76,7 +76,7 @@ function getContentId(): number {
   return parseInt(code);
 }
 
-function writeThenDownload(fname:string, payload: string) {
+function writeThenDownload(fname:string, payload: string): string {
   if(typeof Blob !== 'undefined') {
     var blob = new Blob([payload], {type:"application/json"});
     var url = URL.createObjectURL(blob);
