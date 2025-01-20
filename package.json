@@ -3,6 +3,7 @@
 	"license": "UNLICENSED",
 	"private": true,
 	"workspaces": [
-		"packages/export-form-fields"
+		"packages/export-form-fields",
+		"packages/pro-tools"
 	]
 }
