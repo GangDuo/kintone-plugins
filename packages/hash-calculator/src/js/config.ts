@@ -6,24 +6,39 @@ const PLUGIN_ID = kintone.$PLUGIN_ID;
 
 const form = document.querySelector(".js-submit-settings");
 const cancelButton = document.querySelector(".js-cancel-button");
-const messageInput =
-  document.querySelector<HTMLInputElement>(".js-text-message");
-if (!(form && cancelButton && messageInput)) {
+if (!(form && cancelButton)) {
   throw new Error("Required elements do not exist.");
 }
 const config = kintone.plugin.app.getConfig(PLUGIN_ID);
 
-if (config.message) {
-  messageInput.value = config.message;
+if (config.alwaysOverwrites && JSON.parse(config.alwaysOverwrites)) {
+  (<HTMLInputElement>document.getElementById('radio-1')).checked = true;
+}
+if(config.rows) {
+  console.log(JSON.parse(config.rows));
 }
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  kintone.plugin.app.setConfig({ message: messageInput.value }, () => {
-    alert("The plug-in settings have been saved. Please update the app!");
-    window.location.href = "../../flow?app=" + kintone.app.getId();
+  const rows = [];
+  const trs  = document.querySelectorAll(`.kintoneplugin-table tbody tr`);
+  for (let i = 0; i < trs.length; i++) {
+    const element = trs[i];
+    const values = Array.from(element.querySelectorAll('td')).map(td => td.querySelector('select')?.value);
+    rows.push(values);
+  }
+
+  kintone.plugin.app.setConfig({
+    alwaysOverwrites: JSON.stringify(alwaysOverwrites()),
+    rows: JSON.stringify(rows)
   });
 });
 cancelButton.addEventListener("click", () => {
   window.location.href = "../../" + kintone.app.getId() + "/plugin/";
 });
+
+function alwaysOverwrites(): boolean {
+  const radios = Array.from(document.getElementsByName('radio')).filter(input => (<HTMLInputElement>input).checked);
+  const code = (<HTMLInputElement>radios[0]).value;
+  return !!parseInt(code);
+}
