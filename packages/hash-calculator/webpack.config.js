@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV === "production";
 module.exports = {
   mode: isProduction ? "production" : "development",
   devtool: isProduction ? false : "inline-cheap-module-source-map",
-  entry: { config: "./src/js/config.ts", desktop: "./src/js/desktop.ts" },
+  entry: { config: "./src/js/config.tsx", desktop: "./src/js/desktop.ts" },
   output: {
     path: path.resolve(__dirname, "plugin", "js"),
     filename: "[name].js",
